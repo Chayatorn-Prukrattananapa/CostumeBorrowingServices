@@ -80,35 +80,23 @@ Content-Type: application/json
 }
 
 ###
-PUT http://localhost:8080/costume/5
+PUT http://localhost:8080/costume/5/addBorrower
 Content-Type: application/json
 
 {
-  "id": 5,
-  "name": "Dress",
-  "size": "S",
-  "totalAmount": 5,
-  "location": "B2",
-  "borrower": [
-    {
-      "id": 3,
-      "name": "John Doe",
-      "contact": "asdf",
-      "borrowedAmount": 1
-    },
-    {
-      "id": 4,
-      "name": "Jane Doe",
-      "contact": "asdf",
-      "borrowedAmount": 1
-    },
-    {
-      "id": 5,
-      "name": "Borrower 5",
-      "contact": "02-1234567",
-      "borrowedAmount": 1
-    }
-  ]
+  "name": "New Borrower",
+  "contact": "new_contact",
+  "borrowedAmount": 1
+}
+
+###
+PUT http://localhost:8080/costume/5/removeBorrower
+Content-Type: application/json
+
+{
+  "id": 1,
+  "name": "John Doe",
+  "contact": "asdf"
 }
 
 ###

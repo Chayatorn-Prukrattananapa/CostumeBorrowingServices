@@ -9,14 +9,11 @@ import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @RestController
 public class CostumeBorrowerController {
     private final StorageRepository costumeBorrowerRepository;
     private final BorrowerRepository borrowerRepository;
-    private static final Logger log = LoggerFactory.getLogger(CostumeBorrowerController.class);
 
     CostumeBorrowerController(StorageRepository costumeBorrowerRepository, BorrowerRepository borrowerRepository) {
         this.costumeBorrowerRepository = costumeBorrowerRepository;
@@ -46,28 +43,52 @@ public class CostumeBorrowerController {
 
     @PutMapping("/costume/{id}")
     public Storage borrowCostume(@RequestBody Storage newCostume, @PathVariable Long id) {
-        log.info("Received PUT request for costume ID: " + id);
-        log.info("New costume details: " + newCostume.toString());
         return costumeBorrowerRepository.findById(id)
                 .map(costume -> {
-                    log.info("Updating existing costume with ID: " + id);
                     costume.setName(newCostume.getName());
                     costume.setSize(newCostume.getSize());
                     costume.setTotalAmount(newCostume.getTotalAmount());
                     costume.setLocation(newCostume.getLocation());
                     costume.setBorrower(newCostume.getBorrower());
                     costume.recalculateAmounts(); // Ensure amounts are recalculated
-log.info("Updated costume details: " + costume.toString());
                     return costumeBorrowerRepository.save(costume);
                 })
                 .orElseGet(() -> {
-                    log.info("Creating new costume as no existing costume found with ID: " + id);
                     newCostume.recalculateAmounts(); // Ensure amounts are recalculated
-log.info("New costume details after recalculation: " + newCostume.toString());
                     return costumeBorrowerRepository.save(newCostume);
                 });
     }
     
+    @PutMapping("/costume/{id}/addBorrower")
+    public Storage addBorrowerToCostume(@RequestBody Borrower newBorrower, @PathVariable Long id) {
+        return costumeBorrowerRepository.findById(id)
+                .map(costume -> {
+                    newBorrower.setStorage(costume);
+                    borrowerRepository.save(newBorrower);
+                    costume.addBorrower(newBorrower);
+                    costume.recalculateAmounts(); // Ensure amounts are recalculated
+                    return costumeBorrowerRepository.save(costume);
+                })
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Costume not found"));
+    }
+
+    @PutMapping("/costume/{id}/removeBorrower")
+    public Storage removeBorrowerFromCostume(@RequestBody Borrower borrowerToRemove, @PathVariable Long id) {
+        return costumeBorrowerRepository.findById(id)
+                .map(costume -> {
+                    Optional<Borrower> borrower = borrowerRepository.findById(borrowerToRemove.getId());
+                    if (borrower.isPresent()) {
+                        costume.removeBorrower(borrower.get());
+                        borrowerRepository.delete(borrower.get());
+                        costume.recalculateAmounts(); // Ensure amounts are recalculated
+                        return costumeBorrowerRepository.save(costume);
+                    } else {
+                        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Borrower not found");
+                    }
+                })
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Costume not found"));
+    }
+
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/costume/{id}")
     @Transactional // Ensure that both repositories succeed or fail together.
@@ -77,5 +98,4 @@ log.info("New costume details after recalculation: " + newCostume.toString());
     }
 
 }
-    
-    
+
