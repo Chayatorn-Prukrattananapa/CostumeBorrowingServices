@@ -1,0 +1,115 @@
+###
+GET http://localhost:8080/costume
+
+###
+GET http://localhost:8080/costume/5
+
+###
+GET http://localhost:8080/costume/6
+
+###
+PUT http://localhost:8080/costume/5
+Content-Type: application/json
+
+{
+  "id": 5,
+  "name": "Dress",
+  "size": "S",
+  "totalAmount": 5,
+  "location": "B2",
+  "borrower": [
+    {
+      "id": 3,
+      "name": "John Doe",
+      "contact": "asdf",
+      "borrowedAmount": 2
+    },
+    {
+      "id": 4,
+      "name": "Jane Doe",
+      "contact": "asdf",
+      "borrowedAmount": 1
+    }
+  ]
+}
+
+###
+PUT http://localhost:8080/costume/5
+Content-Type: application/json
+
+{
+  "id": 5,
+  "name": "Dress",
+  "size": "S",
+  "totalAmount": 5,
+  "location": "B2",
+  "borrower": [
+    {
+      "id": 3,
+      "name": "John Doe",
+      "contact": "asdf",
+      "borrowedAmount": 1
+    },
+    {
+      "id": 4,
+      "name": "Jane Doe",
+      "contact": "asdf",
+      "borrowedAmount": 1
+    }
+  ]
+}
+
+###
+PUT http://localhost:8080/costume/5
+Content-Type: application/json
+
+{
+  "id": 5,
+  "name": "Dress",
+  "size": "S",
+  "totalAmount": 5,
+  "location": "B2",
+  "borrower": [
+    {
+      "id": 3,
+      "name": "John Doe",
+      "contact": "asdf",
+      "borrowedAmount": 1
+    }
+  ]
+}
+
+###
+PUT http://localhost:8080/costume/5
+Content-Type: application/json
+
+{
+  "id": 5,
+  "name": "Dress",
+  "size": "S",
+  "totalAmount": 5,
+  "location": "B2",
+  "borrower": [
+    {
+      "id": 3,
+      "name": "John Doe",
+      "contact": "asdf",
+      "borrowedAmount": 1
+    },
+    {
+      "id": 4,
+      "name": "Jane Doe",
+      "contact": "asdf",
+      "borrowedAmount": 1
+    },
+    {
+      "id": 5,
+      "name": "Borrower 5",
+      "contact": "02-1234567",
+      "borrowedAmount": 1
+    }
+  ]
+}
+
+###
+DELETE http://localhost:8080/costume/5
